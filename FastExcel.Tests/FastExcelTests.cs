@@ -77,5 +77,16 @@ namespace FastExcel.Tests
             var exception = Record.Exception(action);
             Assert.Null(exception);
         }
+
+        [Fact]
+        public void ThrowsErrorIfInitializedWithStreamAndFileInfoIsAccessed() {
+            using var inputMemorystream = new MemoryStream(new byte[]{0x1});
+            using var outputMemorystream = new MemoryStream();
+            var fastExcel = new FastExcel(inputMemorystream,outputMemorystream);
+            var exception = Assert.Throws<ApplicationException>(() => fastExcel.ExcelFile);
+            Assert.Equal($"ExcelFile was not provided", exception.Message);
+            exception = Assert.Throws<ApplicationException>(() => fastExcel.TemplateFile);
+            Assert.Equal($"TemplateFile was not provided", exception.Message);
+        }
     }
 }
